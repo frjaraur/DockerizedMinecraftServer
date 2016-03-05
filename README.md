@@ -1,4 +1,4 @@
-# DockerizedMinecraftServer
+# Dockerized Minecraft Server
 Dockerized Minecraft Server
 
 - Customize server.properties as needed
@@ -19,3 +19,4 @@ Dockerized Minecraft Server
 
 
 
+I created this container for my son's game server :D
