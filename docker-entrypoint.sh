@@ -42,7 +42,7 @@ case $ACTION in
 		echo "Starting server on port defined in server.properties, if you want a new port, you must build a new container and changed expose port"
 		echo "DOCKER PORT is [${SERVER_PORT}]"
 		echo "If you want to use this service on internet, don't forget to change your routing/portnat in your infrastructure."
-		java -Dfml.queryResult=confirm -Xms2048M -Xmx2048M -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalPacing \
+		gosu mserver java -Dfml.queryResult=confirm -Xms2048M -Xmx2048M -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:+CMSIncrementalPacing \
 		-XX:ParallelGCThreads=2 -XX:+AggressiveOpts -jar minecraft_server.jar nogui
 	;;
 
