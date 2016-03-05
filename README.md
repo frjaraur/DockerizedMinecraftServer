@@ -1,0 +1,2 @@
+# DockerizedMinecraftServer
+Dockerized Minecraft Server
