@@ -11,5 +11,5 @@ update:
 
 run189moded:
 	docker rm -fv mc189 || echo
-	docker run -d --name mc189 --net=host -ti -e MODS=true -e VERSION=1.8.9 -e USERID=1000 -e GROUPID=1000 -v /home/zero/MINECRAFT:/MINECRAFT frjaraur/mcserver start
+	docker run -d --name mc189 --net=host -ti -e MODS=true -e VERSION=1.8.9 -e USERID=1000 -e GROUPID=1000 -v _PATH_TO_YOUR_GAME_DIR_:/MINECRAFT frjaraur/mcserver start
 	docker logs -f mc189
