@@ -23,19 +23,20 @@ ENV VERSION 1.10
 ENV MODS false
 ENV USERID 3333
 ENV GROUPID ${USERID}
-ENV BASEDIR /MINECRAFT
+ENV BASEDIR /BASE
+ENV GAMEDIR /MINECRAFT
 
 RUN groupadd -r mcserver --gid=${GROUPID} && useradd -r -g mcserver --uid=${USERID} mcserver
 
-WORKDIR /MINECRAFT
+WORKDIR /BASE
 
 VOLUME /MINECRAFT
 
 COPY forge forge
 
-COPY mcserver.sh mcserver.sh
+COPY mcserver.sh /mcserver.sh
 
-ENTRYPOINT ["/MINECRAFT/mcserver.sh"]
+ENTRYPOINT ["/mcserver.sh"]
 
 EXPOSE 25565
 

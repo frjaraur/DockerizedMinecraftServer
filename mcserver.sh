@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#
+
 ACTION="$(echo $1|tr '[A-Z]' '[a-z]')"
 
 VERSION=${VERSION:=1.10}
@@ -10,7 +12,9 @@ USERID=${USERID:=3333}
 
 GROUPID=${GROUPID:=USERID}
 
-BASEDIR=${BASEDIR:=/MINECRAFT}
+BASEDIR="/BASE"
+
+GAMEDIR=${GAMEDIR:=/MINECRAFT}
 
 # COLORS
 RED='\033[0;31m' # Red
@@ -27,7 +31,7 @@ Help(){
   printf "${RED}USERID${YELL} --> ${RED}-e\"USERID=3333\"${YELL} (default)${NC}\n"
   printf "${RED}GROUPID${YELL} --> ${RED}-e\"GROUPID=3333\"${YELL} (default)${NC}\n"
   printf "${RED}BASEDIR${YELL} Should be a volumen mapped on your host engine.${NC}\n"
-  printf "\n${RED}*Use your userid and groupid if you want to take control of configuration files.${NC}\n"  
+  printf "\n${RED}*Use your userid and groupid if you want to take control of configuration files.${NC}\n"
 
 }
 
@@ -73,18 +77,35 @@ CheckMods(){
 
 SetUpEnvironment(){
 
-  MCSERVERDIR="${BASEDIR}/MCSERVER_${VERSION}"
+  MCSERVERDIR="${GAMEDIR}/MCSERVER_${VERSION}"
 
   [ ! -f ${MCSERVERDIR} ] && mkdir -p ${MCSERVERDIR} || ErrorMessage "Can not create server game dir '${MCSERVERDIR}'."
+
   if [ "${MODS}" = "false" ]
   then
     [ ! -f ${MCSERVERDIR}/minecraft_server.${VERSION}.jar ] \
-    && cp minecraft_server.${VERSION}.jar ${MCSERVERDIR} \
-    || ErrorMessage "Can not copy 'minecraft_server.${VERSION}.jar' to server game dir '${MCSERVERDIR}'."
+    && cp -f ${BASEDIR}/minecraft_server.${VERSION}.jar ${MCSERVERDIR} #\
+    #|| ErrorMessage "Can not copy 'minecraft_server.${VERSION}.jar' to server game dir '${MCSERVERDIR}'."
   else
-    [ ! -f ${MCSERVERDIR}/${FORGE_VERSION} ] && \
-    cp forge/${FORGE_VERSION} ${MCSERVERDIR} \
-    || ErrorMessage "Can not copy 'forge/${FORGE_VERSION}' to server game dir '${MCSERVERDIR}'."
+    echo "SOURCE: [${BASEDIR}/forge/${FORGE_VERSION}] DEST: [${MCSERVERDIR}]"
+    [ ! -f "${MCSERVERDIR}/${FORGE_VERSION}" ] \
+    && cp -f ${BASEDIR}/forge/${FORGE_VERSION} ${MCSERVERDIR} # \
+    #ErrorMessage "Can not copy 'forge/${FORGE_VERSION}' to server game dir '${MCSERVERDIR}'."
+
+		### Added for RaspberryJamMod.jar
+		#
+		# Good Job !!! You Made my son learn to code ;P
+		#
+		if [ -f ${MCSERVERDIR}/mods/RaspberryJamMod.jar -o -f ${MCSERVERDIR}/mods/${VERSION}/RaspberryJamMod.jar ]
+		then
+			[ ! $(which python)  ] && apt-get -qq update \
+			&& LC_ALL=en_US.UTF-8 DEBIAN_FRONTEND=noninteractive apt-get install -qq --no-install-recommends unzip python python3
+			[ ! -d ${MCSERVERDIR}/mcpipy ] \
+			&& wget -q -O ${MCSERVERDIR}/python3-scripts.zip "https://github.com/arpruss/raspberryjammod/raw/master/python3-scripts.zip" \
+			&& unzip -qn ${MCSERVERDIR}/python3-scripts.zip -d ${MCSERVERDIR}
+		fi
+
+
   fi
 
   # Accept eula
@@ -111,7 +132,7 @@ BackupWorld(){
 
 
   # Create new backup
-  [ -d ${MCSERVERDIR}/world ] && tar -jcf ${MCSERVERDIR}/world.current.tar.bz ${MCSERVERDIR}/world \
+  [ -d ${MCSERVERDIR}/world ] && gosu ${USERID} tar -jcf ${MCSERVERDIR}/world.current.tar.bz ${MCSERVERDIR}/world \
   || ErrorMessage "Can not create '${MCSERVERDIR}/world.current.tar.bz'."
 
 }
@@ -126,6 +147,7 @@ case ${ACTION} in
     InfoMessage "MODS=${MODS}"
     InfoMessage "USERID=${USERID}"
     InfoMessage "BASEDIR=${BASEDIR}"
+    InfoMessage "GAMEDIR=${GAMEDIR}"
 
     [ ! -f "minecraft_server.${VERSION}.jar" ] && Download
 
