@@ -19,9 +19,9 @@ Added support for 'Raspberry Jam Mod' if you put RaspberryJamMod.jar into your _
 Docker container will download python example scripts from Git to start using this great mod.
 
 https://github.com/arpruss/raspberryjammod
-* RaspberryJamMod listening on port 4711 and Websocket server on 14711 are not exposed. 
+* RaspberryJamMod listening on port 4711 and Websocket server on 14711 are not exposed.
 
-Good Job !!! You Made my son learn to code ;P
+[arpruss](https://github.com/arpruss) Good Job !!! You Made my son learn to code ;P
 
 I created this container for my son's game server :D, have fun :)
 
